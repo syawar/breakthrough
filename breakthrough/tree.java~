@@ -1,0 +1,10 @@
+import java.util.Arrays;
+import java.io.*;
+public class tree {
+              int x,y;
+              tree centre;      
+              tree left;   
+              tree right; 
+              int checked;
+              int ranking; 
+           }

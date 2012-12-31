@@ -1,0 +1,13 @@
+# Server version 0.04 running on socs-1.CS.McGill.CA:8123
+# Game ID: 56
+# Board class: breakthrough.BTBoard
+# Timeout: 5000
+# Date: Tue Jan 27 14:54:16 GMT 2009
+# Player 1: WHITE, 'fixed', running on localhost
+# Player 2: BLACK, 'syawar', running on localhost
+START WHITE fixed
+START BLACK syawar
+WHITE 10 19
+GAMEOVER ILLEGAL MOVE: BLACK B8 -> C7
+WINNER WHITE
+# Game ended: Tue Jan 27 14:54:16 GMT 2009

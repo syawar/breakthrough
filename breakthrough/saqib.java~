@@ -1,0 +1,180 @@
+package breakthrough;
+
+import java.util.Random;
+
+import boardgame.Board;
+import boardgame.Move;
+import boardgame.Player;
+
+public class saqib extends Player {
+    Random rand = new Random();
+    
+    /** Provide a default public constructor */
+    public saqib() { super("Saqib"); }
+
+   //Find all my pieces
+    public int[][] Position(BTBoard board, int myColor){
+    int[][] pieces = new int[2*BTBoard.SIZE][2];
+    int next = 0;
+    for( int i = 0; i < BTBoard.SIZE; i++ )
+        for( int j = 0; j < BTBoard.SIZE; j++ )
+            if( board.getPieceAt(i,j) == myColor ) {
+                pieces[next][0]= i;
+                pieces[next][1]=j;
+                next++;
+            }
+	return pieces;
+    }
+    
+    public int checkMoves(BTBoard clone,int myColor, int count){
+	 	int max=0;
+	 	int[][] pieces = new int[2*BTBoard.SIZE][2];
+	 	int[][] tempieces = new int[2*BTBoard.SIZE][2];
+	 	for(int i=0;i< 2*BTBoard.SIZE;i++){
+	 		pieces[i][0]=-1;
+	 		pieces[i][1]=-1;
+	 		
+	 		}
+    	pieces=this.Position(clone,myColor);
+    	for(int i=0;i<2*BTBoard.SIZE;i++){
+    		if(count<2){
+    			if(pieces[i][0]!=-1){
+    				tempieces[i][0]=myChecking(clone,pieces[i][0],pieces[i][1],myColor,count);
+    				
+    			}
+    			
+			 }
+			 else {
+			 	for(int j=0;j<2*BTBoard.SIZE;j++){
+			 		if(tempieces[j][0]!=-1){
+			 			if(tempieces[j][0]>max)
+			 			{
+			 				max=tempieces[j][0];
+			 			}
+			 		}
+			 	}
+			 	return max;
+			 } 	
+    	}
+    	
+    	return max;
+    }
+    public int rank(BTBoard board,int myColor){
+    int count=0;
+    int[][] pieces = new int[2*BTBoard.SIZE][2];
+    int next = 0;
+    for( int i = 0; i < BTBoard.SIZE; i++ ){
+        for( int j = 0; j < BTBoard.SIZE; j++ ){
+            if( board.getPieceAt(i,j) == myColor ) {
+                pieces[next][0]= i;
+                pieces[next][1]=j;
+                next++;
+                if(i>=count && myColor == BTBoard.WHITE){
+                	count=i;
+                }
+                if(i<=8-count && myColor == BTBoard.BLACK){
+                	count=8-i;
+                }
+            }
+ 			}       
+     }
+     
+     return count;
+    }
+    
+    ///these two check recursively the rank of each move 
+    public int myChecking(BTBoard board,int x,int y,int Color,int count){
+		//int max=0;
+		if(count<2){    		
+    		//int max=0;
+	     for( int dir = -1; dir < 2; dir++ ) {
+	    	 int i2 = x + (Color == BTBoard.WHITE ? 1 : -1);
+       	 int j2 = y + dir;
+        		BTBoard tempboard = (BTBoard) board; 
+	    	 BTMove m = new BTMove( Color, tempboard.getCoord(x,y),tempboard.getCoord(i2,j2) );
+	    		 if (board.isLegal( m ))
+	     		{ 
+	     			board.move(m);
+	     			System.out.println("line 100:"+checkMoves(tempboard,3-Color,count));
+	     			return checkMoves(tempboard,3-Color,count);
+	     		}	
+	      }	
+	     }
+	     int max=rank(board,Color);
+	     return max;
+	    }
+	     	
+	  
+    	//return max;
+
+   /*
+    public int oppChecking(BTBoard board,int Color,int count){
+ 		if(count<2){	
+ 			int max=0;  	
+ 			for( int dir = -1; dir < 2; dir++ ) {
+	     		int i2 = x + (Color == BTBoard.WHITE ? 1 : -1);
+        		int j2 = y + dir;
+        		
+        		BTBoard tempboard = (BTBoard) board; 
+	     		BTMove m = new BTMove( Color, tempboard.getCoord(x,y),tempboard.getCoord(i2,j2) );
+	    		 if (board.isLegal( m ))
+	     		{
+	     			myChecking(tempboard,3-Color,count++);
+
+	     		}		
+	   	 }
+	   }
+    	return max;
+    }*/
+    
+    /** Implement a way of picking moves */
+    public Move chooseMove(Board theboard) {
+        // Cast the arguments to the objects we want to work with
+        BTBoard board = (BTBoard) theboard;
+        BTBoard clone = (BTBoard) board;        
+        // What color am I ?
+        int myColor = this.getColor();
+	//System.out.println(myColor);
+        int[][] pieces = new int[2*BTBoard.SIZE][2];
+        int[][] OPPpieces = new int[2*BTBoard.SIZE][2];
+        pieces=this.Position(board,myColor);
+			OPPpieces=this.Position(board,3-myColor);
+			
+			int temp=checkMoves(clone,myColor,0);
+			System.out.println("this is the rank:"+temp);
+
+	//BTBoard tempBoard(board);
+
+	int next=2*BTBoard.SIZE;
+
+        // Try to find a random valid move a few times, 
+        // or give up an play an illegal move
+        int idx, dir;
+        int i1, j1, i2, j2;
+        for( int k = 0; true; k++ ) {
+            // Pick a piece at random   
+            idx = rand.nextInt(next);
+            // Pick a direction at random (left, right, forward)
+            dir = rand.nextInt(3) - 1;
+            // Play if the move is valid or we've tried enough times 
+            i1 = pieces[idx][0]; 
+            j1 = pieces[idx][1];
+            i2 = i1 + (myColor == BTBoard.WHITE ? 1 : -1);
+            j2 = j1 + dir;
+            BTMove m = new BTMove( myColor, 
+                    board.getCoord(i1,j1), 
+                    board.getCoord(i2,j2) );
+            if( k >= 50 || board.isLegal( m ) ) {
+                System.out.println( (k >= 50 ? "I give up, " : "") +
+                        "I play " + m.toPrettyString() ); 
+               BTMove mTest = new BTMove( myColor, 
+                    clone.getCoord(i1,j1), 
+                    clone.getCoord(i2,j2) );
+                System.out.println("\n"+rank(clone,myColor)+"\n");               
+                return  m;
+                
+            }
+        }
+    }
+    
+} 

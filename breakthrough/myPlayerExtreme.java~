@@ -1,0 +1,131 @@
+package breakthrough;
+
+import java.util.Random;
+
+import boardgame.Board;
+import boardgame.Move;
+import boardgame.Player;
+
+/**
+ * this is where my player starts
+ */
+/*public class Tre {
+              int x,y;
+              Tre centre;      
+              Tre left;   
+              Tre right;  
+           } */
+public class myPlayerExtreme extends Player {
+
+    Random rand = new Random();
+    
+    /** Provide a default public constructor */
+    public myPlayerExtreme() { super("Saqib"); }
+    
+    //find all the opponents pieces 
+
+    public int[][] OppPosition(BTBoard board,int myColor){
+        int[][] OPPpieces = new int[2*BTBoard.SIZE][2];
+        int previous=BTBoard.SIZE;
+	int count=0;        
+	for( int i = BTBoard.SIZE; i >= 0; i-- ){
+            for( int j = BTBoard.SIZE;  j>= 0; j-- ){
+                if( board.getPieceAt(i,j) == myColor ) {
+                    OPPpieces[previous][0]= i;
+                    OPPpieces[previous][1]=j;
+                   previous--;
+                }
+	    }
+	}
+	System.out.println(count);
+        return OPPpieces;
+    }
+
+   //Find all my pieces
+    public int[][] Position(BTBoard board, int myColor){
+    int[][] pieces = new int[2*BTBoard.SIZE][2];
+    int next = 0;
+    for( int i = 0; i < BTBoard.SIZE; i++ )
+        for( int j = 0; j < BTBoard.SIZE; j++ )
+            if( board.getPieceAt(i,j) == myColor ) {
+                pieces[next][0]= i;
+                pieces[next][1]=j;
+                next++;
+            }
+	return pieces;
+    }
+    
+    /** Implement a way of picking moves */
+    public Move chooseMove(Board theboard) {
+        // Cast the arguments to the objects we want to work with
+        BTBoard board = (BTBoard) theboard;
+                
+        // What color am I ?
+        int myColor = this.getColor();
+	System.out.println(myColor);
+        int[][] pieces = new int[2*BTBoard.SIZE][2];
+        int[][] OPPpieces = new int[2*BTBoard.SIZE][2];
+        pieces=this.Position(board,myColor);
+	OPPpieces=this.OppPosition(board,3-myColor);
+
+	//BTBoard tempBoard(board);
+
+	int next=2*BTBoard.SIZE;
+
+        // Try to find a random valid move a few times, 
+        // or give up an play an illegal move
+        int idx, dir;
+        int i1, j1, i2, j2;
+        for( int k = 0; true; k++ ) {
+            // Pick a piece at random   
+            idx = rand.nextInt(next);
+            // Pick a direction at random (left, right, forward)
+            dir = rand.nextInt(3) - 1;
+            // Play if the move is valid or we've tried enough times 
+            i1 = pieces[idx][0]; 
+            j1 = pieces[idx][1];
+            i2 = i1 + (myColor == BTBoard.WHITE ? 1 : -1);
+            j2 = j1 + dir;
+            BTMove m = new BTMove( myColor, 
+                    board.getCoord(i1,j1), 
+                    board.getCoord(i2,j2) );
+            if( k >= 50 || board.isLegal( m ) ) {
+                System.out.println( (k >= 50 ? "I give up, " : "") +
+                        "I play " + m.toPrettyString() );
+                return  m;
+            }
+        }
+    }
+    
+} 
+
+
+
+
+
+
+
+
+
+
+/*change from here
+code
+choose highest ranked move
+prune his highest ranked move
+chose the one that results in highest ranking for your move
+ranking?
+no of pieces on the board and the piece that is fathest
+check each possibility and then check each opponents possibility
+depth first search for board condition and then rank...
+make highest ranking move
+check each piece and their possible outcomes...
+create whole tree and then create a 48 by 5 array containing the 48 possible moves and the coordinates if each and then 
+the last row for the rank of each
+if the rank is the same then evaluate the 
+select move according to that best according to opposition player ranking
+*/ 
+// End class
+//what is required> cost function and then evaluation to set the next move
+//design data structure to hold the info and evaluation at each stage then
+//take the next possible move
+//get the moves from the random player

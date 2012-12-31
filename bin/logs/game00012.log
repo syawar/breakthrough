@@ -1,0 +1,12 @@
+# Server version 0.04 running on socs-1.CS.McGill.CA:8123
+# Game ID: 12
+# Board class: breakthrough.BTBoard
+# Timeout: 5000
+# Date: Tue Jan 27 04:25:19 GMT 2009
+# Player 1: WHITE, 'Saqib', running on localhost
+# Player 2: BLACK, 'dummy', running on localhost
+START WHITE Saqib
+START BLACK dummy
+GAMEOVER TIMEOUT WHITE
+WINNER BLACK
+# Game ended: Tue Jan 27 04:25:25 GMT 2009
